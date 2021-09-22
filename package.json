@@ -1,0 +1,14 @@
+{
+  "name": "@vincenzoaiello/vintedapi",
+  "version": "1.0.2",
+  "description": "Api for Vinted",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Vincenzo Aiello",
+  "license": "ISC",
+  "dependencies": {
+    "node-fetch": "^2.6.0"
+  }
+}
