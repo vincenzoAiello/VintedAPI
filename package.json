@@ -1,6 +1,6 @@
 {
   "name": "@vincenzoaiello/vintedapi",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Api for Vinted",
   "main": "index.js",
   "scripts": {
@@ -10,5 +10,9 @@
   "license": "ISC",
   "dependencies": {
     "node-fetch": "^2.6.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vincenzoAiello/VintedAPI"
   }
 }
