@@ -1,6 +1,6 @@
 {
   "name": "@vincenzoaiello/vintedapi",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "Api for Vinted",
   "main": "index.js",
   "scripts": {

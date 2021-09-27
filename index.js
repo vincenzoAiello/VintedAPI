@@ -3,10 +3,12 @@ const fetch = require("node-fetch");
 class VintedApi {
 	constructor() {
 		this.token = "";
+		this.privateToken = "";
+		this.currentUserId = "";
 	}
 
 	/**
-	 * @summary Get token for the authorization
+	 * @summary Get public token
 	 * @returns {Promise<String>} Json response
 	 */
 	async getToken() {
@@ -17,13 +19,14 @@ class VintedApi {
 			},
 			body: "scope=public&client_id=android&grant_type=password",
 		});
+
 		let json = await data.json();
 		this.token = json.access_token;
 		return json;
 	}
 
 	/**
-	 * @summary Revoke token
+	 * @summary Revoke public token
 	 * @returns {Promise<String>} Json response
 	 */
 	async revokeToken() {
@@ -36,6 +39,16 @@ class VintedApi {
 
 		let json = await data.json();
 		return json;
+	}
+
+	/**
+	 * @summary Set private token
+	 * @param {String}	privateToken private token
+	 * @returns {Promise<void>}
+	 */
+	async setPrivateToken(privateToken) {
+		this.privateToken = privateToken;
+		await this.getCurrenUser();
 	}
 
 	/**
@@ -75,8 +88,8 @@ class VintedApi {
 		return json;
 	}
 
-	//LogIn
-	/*async logIn(email, password) {
+	/*//LogIn
+	async logIn(email, password) {
 		let data = await fetch("https://www.vinted.fr/api/v2/captchas", {
 			method: "POST",
 			headers: {
@@ -93,6 +106,7 @@ class VintedApi {
 		});
 		let json = await data.json();
 		let uuid = json.uuid;
+		console.log(json);
 
 		let data2 = await fetch("https://www.vinted.fr/oauth/token", {
 			method: "POST",
@@ -103,26 +117,14 @@ class VintedApi {
 				password: "Federernadal5",
 				scope: "user",
 				client_id: "android",
-				username: "accountprova@gmail.com",
+				username: "accountprova",
 				grant_type: "password",
-				uuid: "9f8ed5c4-ac5d-411b-8c77-0ef2012bbb85",
+				uuid: uuid,
 			}),
 		});
 		let json2 = await data2.json();
 		console.log(json2);
 		this.token = json2.access_token;
-	}*/
-
-	/*//return LogIn account's information
-	async getCurrenUser() {
-		let data = await fetch("https://www.vinted.it/api/v2/users/current", {
-			method: "GET",
-			headers: {
-				authorization: "Bearer " + this.token,
-			},
-		});
-		let json = await data.json();
-		return json;
 	}*/
 
 	/**
@@ -176,6 +178,78 @@ class VintedApi {
 				method: "GET",
 				headers: {
 					authorization: "Bearer " + this.token,
+				},
+			}
+		);
+		let json = await data.json();
+		return json;
+	}
+
+	/**
+	 * @summary Get info of the account associated to the private Token
+	 * @returns {Promise<String>} Json response (Current user's info)
+	 */
+	async getCurrenUser() {
+		let data = await fetch("https://www.vinted.it/api/v2/users/current", {
+			method: "GET",
+			headers: {
+				authorization: "Bearer " + this.privateToken,
+			},
+		});
+		let json = await data.json();
+		this.currentUserId = json.user.id;
+		return json;
+	}
+
+	/**
+	 * @summary Get Current user's favourite items
+	 * @returns {Promise<String>} Json response (Current user's favourite items)
+	 */
+	async getCurrentUserFav() {
+		let data = await fetch(
+			"https://www.vinted.fr/api/v2/users/" +
+				this.currentUserId +
+				"/items/favourites?page=1&per_page=20",
+			{
+				method: "GET",
+				headers: {
+					authorization: "Bearer " + this.privateToken,
+				},
+			}
+		);
+		let json = await data.json();
+		return json;
+	}
+
+	/**
+	 * @summary Get Current user's wallet info
+	 * @returns {Promise<String>} Json response (Current user's wallet info)
+	 */
+	async getCurrentUserWallet() {
+		let data = await fetch(
+			"https://www.vinted.fr/api/v2/wallet/invoices/current",
+			{
+				method: "GET",
+				headers: {
+					authorization: "Bearer " + this.privateToken,
+				},
+			}
+		);
+		let json = await data.json();
+		return json;
+	}
+
+	/**
+	 * @summary Get Current user's order
+	 * @returns {Promise<String>} Json response (Current user's order)
+	 */
+	async getCurrentUserOrders() {
+		let data = await fetch(
+			"https://www.vinted.fr/api/v2/transaction_messages?folder=message&page=1&per_page=20",
+			{
+				method: "GET",
+				headers: {
+					authorization: "Bearer " + this.privateToken,
 				},
 			}
 		);

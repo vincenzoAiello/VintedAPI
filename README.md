@@ -10,6 +10,9 @@ Reverse engineering of Vinted's API for Andorid. The content of this repository 
 - Search users by username
 - Get user's items on sale by userId
 - Get user's feedbacks by userId
+- Get Current user's favourite items
+- Get Current user's wallet info
+- Get Current user's order
 
 ## Installation
 
@@ -19,6 +22,8 @@ npm i @vincenzoaiello/vintedapi
 
 ## Example of use
 
+For private features on the current user, you have to get a private token. You can get it using mitmproxy sniffing the requests made to a https://www.vinted.fr/oauth/token
+
 ```javascript
 const VintedApi = require("@vincenzoaiello/vintedapi");
 
@@ -26,7 +31,7 @@ const VintedApi = require("@vincenzoaiello/vintedapi");
 	//initialize
 	let vinted = new VintedApi.VintedApi();
 
-	//get token for the next requests
+	//get public token for the next requests
 	await vinted.getToken();
 
 	//sign in
@@ -41,7 +46,22 @@ const VintedApi = require("@vincenzoaiello/vintedapi");
 	//Get user's feedbacks by userId
 	console.log(await vinted.getUserFeedbacks(user.user.id));
 
-	//revoke token
+	//Set private token
+	await vinted.setPrivateToken("token");
+
+	//Get info of the account associated to the private Token
+	console.log(await vinted.getCurrenUser());
+
+	//Get Current user's favourite items
+	console.log(await vinted.getCurrentUserFav());
+
+	//Get Current user's wallet info
+	console.log(await vinted.getCurrentUserWallet());
+
+	//Get Current user's order
+	console.log(await vinted.getCurrentUserOrders());
+
+	//revoke public token
 	await vinted.revokeToken();
 })();
 ```
